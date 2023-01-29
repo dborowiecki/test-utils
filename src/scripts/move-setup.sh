@@ -1,2 +1,3 @@
-/bin/echo "$TEMPLATE_CONTENT" > /.circleci/base-generated-config.yaml
-/bin/echo "$SCRIPT_CONTENT" > /.circleci/generate-config.py
+#!/bin/bash
+echo "$TEMPLATE_CONTENT" > /.circleci/base-generated-config.yaml
+echo "$SCRIPT_CONTENT" > /.circleci/generate-config.py
