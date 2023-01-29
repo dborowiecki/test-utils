@@ -1,0 +1,34 @@
+description: >
+  Job uses generate-config.py python script to programatically define 
+  test execution jobs for given building block. Defined test harness runs all
+  test suites agains all candidate applications. 
+  Candidate applications have to be defined in <repo>/examples/<candidate-app>/ directory
+  and provide executable test_entrypoint.sh script that'll setup API in host network.
+  Test suites have to be defined in <repo>/test/<test-suite>/ directory and provide test_entrypoint.sh
+  script that'll run gherkin tests execution which will result in test result in message format available in 
+  <repo>/test/<test-suite>/result/example-result.message  
+
+executor: python/default
+
+steps: 
+    - checkout
+    - run: mkdir -p workspace
+    - python/install-packages:
+        args: PyYAML
+        pypi-cache: false
+    - run:
+      name: "Copy generation script and yml template from orb to the filesystem"
+      environment:
+          TEMPLATE_CONTENT: <<include(templates/base-generated-config.yaml)>>
+          SCRIPT_CONTENT: <<include(templates/generate-config.py)>>
+      command: |
+         /bin/echo "$TEMPLATE_CONTENT" > /.circleci/base-generated-config.yaml
+         /bin/echo "$SCRIPT_CONTENT" > /.circleci/generate-config.py
+    - run:
+        name: Create config
+        command: pipenv run python .circleci/generate-config.py
+    - run: mv .circleci/generated.yml workspace
+    - persist_to_workspace:
+        root: workspace
+        paths:
+        - generated.yml

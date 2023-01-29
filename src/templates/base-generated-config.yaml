@@ -1,0 +1,71 @@
+version: 2.1
+
+jobs:
+  test-example:
+    parameters:
+      example-app-name:
+        type: string
+      example-app-path:
+        type: string
+      test-suite-name:
+        type: string
+      test-suite-path:
+        type: string
+    machine:
+      image: ubuntu-2004:current
+      docker_layer_caching: true
+    steps:
+      - checkout
+      - run:
+          name: Execute tests
+          command: |
+            # Execute application test_entrypoint.sh in background.
+            chmod u+x << parameters.example-app-path >>/test_entrypoint.sh
+            cd << parameters.example-app-path >> && ./test_entrypoint.sh
+
+            # Execute gherkin tests for given application using test_entrypoint.sh
+            chmod u+x << parameters.test-suite-path >>/test_entrypoint.sh
+            cd << parameters.test-suite-path >> && ./test_entrypoint.sh
+      - checkout
+      - run:
+          name: Export test results
+          command: |
+            export TEST_RESULT_REPORT_PATH=<< parameters.test-suite-path >>/result/example_result.message
+            # API POST call is executed using exported result file and additional execution information as an input
+            if ! [ -f "$TEST_RESULT_REPORT_PATH" ]; then
+                echo "Report file has to be available under ${TEST_RESULT_REPORT_PATH} directory"
+                exit 1
+            fi
+
+            if [[ -z "${TEST_RESULTS_STORAGE_API_KEY}" ]]; then
+              echo "No Test Result Storage API Key detected."
+              echo "Please set the TEST_RESULTS_STORAGE_API_KEY environment variable."
+              echo "Aborting test result export."
+              exit 1
+            fi
+
+            if [[ -z "${TEST_RESULT_STORAGE_URL}" ]]; then
+              echo "No Test Result Storage URL detected."
+              echo "Please set the TEST_RESULT_STORAGE_URL environment variable."
+              echo "Aborting test result export."
+              exit 1
+            fi
+
+            curl -v -F buildingBlock=${CIRCLE_PROJECT_REPONAME}    \
+                    -F report=@${TEST_RESULT_REPORT_PATH}          \
+                    -F testSuite=<< parameters.test-suite-name >>  \
+                    -F testApp=<< parameters.example-app-name >>   \
+                    -F sourceBranch=${CIRCLE_BRANCH}               \
+                    -H "x-api-key: ${TEST_RESULTS_STORAGE_API_KEY}"\
+                    "${TEST_RESULT_STORAGE_URL}"
+
+
+workflows:
+  test_everything:
+    jobs:
+      # This part is replaced programatically by test executions for all example applications
+      - test-example:
+          example-app-name: example-application-name
+          example-app-path: path/to/example_application_directory_with_test_entrypoint
+          test-suite-name: example-application-name
+          test-suite-path: path/to/example_application_directory_with_test_entrypoint
