@@ -16,13 +16,13 @@ steps:
         args: PyYAML
         pypi-cache: false
     - run:
-      name: "Copy generation script and yml template from orb to the filesystem"
-      environment:
-          TEMPLATE_CONTENT: <<include(templates/base-generated-config.yaml)>>
-          SCRIPT_CONTENT: <<include(templates/generate-config.py)>>
-      command: |
-         /bin/echo "$TEMPLATE_CONTENT" > /.circleci/base-generated-config.yaml
-         /bin/echo "$SCRIPT_CONTENT" > /.circleci/generate-config.py
+        name: "Copy generation script and yml template from orb to the filesystem"
+        environment:
+            TEMPLATE_CONTENT: <<include(templates/base-generated-config.yaml)>>
+            SCRIPT_CONTENT: <<include(templates/generate-config.py)>>
+        command: |
+            /bin/echo "$TEMPLATE_CONTENT" > /.circleci/base-generated-config.yaml
+            /bin/echo "$SCRIPT_CONTENT" > /.circleci/generate-config.py
     - run:
         name: Create config
         command: pipenv run python .circleci/generate-config.py
