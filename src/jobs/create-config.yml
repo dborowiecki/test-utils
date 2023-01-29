@@ -1,16 +1,16 @@
 description: >
-  Job uses generate-config.py python script to programatically define 
+  Job uses generate-config.py python script to programatically define
   test execution jobs for given building block. Defined test harness runs all
-  test suites agains all candidate applications. 
+  test suites agains all candidate applications.
   Candidate applications have to be defined in <repo>/examples/<candidate-app>/ directory
   and provide executable test_entrypoint.sh script that'll setup API in host network.
   Test suites have to be defined in <repo>/test/<test-suite>/ directory and provide test_entrypoint.sh
-  script that'll run gherkin tests execution which will result in test result in message format available in 
-  <repo>/test/<test-suite>/result/example-result.message  
+  script that'll run gherkin tests execution which will result in test result in message format available in
+  <repo>/test/<test-suite>/result/example-result.message
 
 executor: python/default
 
-steps: 
+steps:
     - checkout
     - python/install-packages:
         args: PyYAML
@@ -27,7 +27,7 @@ steps:
         name: Create config
         command: pipenv run python .circleci/generate-config.py
     - run:
-        name: Persist generated workflow definition 
+        name: Persist generated workflow definition
         command: |
          mkdir -p workspace
          mv .circleci/generated.yml workspace
