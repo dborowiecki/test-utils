@@ -12,7 +12,6 @@ executor: python/default
 
 steps: 
     - checkout
-    - run: mkdir -p workspace
     - python/install-packages:
         args: PyYAML
         pypi-cache: false
@@ -27,7 +26,11 @@ steps:
     - run:
         name: Create config
         command: pipenv run python .circleci/generate-config.py
-    - run: mv .circleci/generated.yml workspace
+    - run:
+        name: Persist generated workflow definition 
+        command: |
+         mkdir -p workspace
+         mv .circleci/generated.yml workspace
     - persist_to_workspace:
         root: workspace
         paths:
