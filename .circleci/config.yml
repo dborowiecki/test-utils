@@ -20,7 +20,7 @@ workflows:
       - shellcheck/check:
           filters: *filters
       - orb-tools/publish:
-          context: publishing-context
+          context: orb-publishing
           filters:
             tags:
               only: /.*/
