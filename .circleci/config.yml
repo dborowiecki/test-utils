@@ -1,7 +1,7 @@
 version: 2.1
 setup: true
 orbs:
-  orb-tools: circleci/orb-tools@11.5
+  orb-tools: circleci/orb-tools@11.6.1
   shellcheck: circleci/shellcheck@3.1
 
 filters: &filters
@@ -20,13 +20,17 @@ workflows:
       - shellcheck/check:
           filters: *filters
       - orb-tools/publish:
-          orb-name: dborowiecki/testutils
-          vcs-type: << pipeline.project.type >>
+          context: publishing-context
+          filters:
+            tags:
+              only: /.*/
+          orb-name: circleci/orb-tools
           requires:
-            [orb-tools/lint, orb-tools/review, orb-tools/pack, shellcheck/check]
-          # Use a context to hold your publishing token.
-          context: orb-publishing
-          filters: *filters
+            - orb-tools/lint
+            - orb-tools/review
+            - orb-tools/pack
+            - shellcheck/check
+          vcs-type: << pipeline.project.type >>
       # Triggers the next workflow in the Orb Development Kit.
       - orb-tools/continue:
           pipeline-number: << pipeline.number >>
