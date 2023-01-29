@@ -1,9 +1,9 @@
 version: 2.1
 
 description: >
-  This orb is used to provide simple packed functionality for executing test harness on building blocks. 
-  Provided commands iterates over the candidate applications and test suites to execute gherkin scenarios and 
-  sends report result to external storage. 
+  This orb is used to provide simple packed functionality for executing test harness on building blocks.
+  Provided commands iterates over the candidate applications and test suites to execute gherkin scenarios and
+  sends report result to external storage.
 # What will your orb allow users to accomplish?
 # Descriptions should be short, simple, and informative.
 
