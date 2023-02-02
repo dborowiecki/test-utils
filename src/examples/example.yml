@@ -14,7 +14,7 @@ usage:
     test_everything:
       jobs:
         - test-harness/create-config:
-            post-steps: # Persist to workspace has to be defined in main workflow 
+            post-steps: # Persist to workspace has to be defined in main workflow
               - persist_to_workspace:
                   root: workspace
                   paths:
