@@ -16,7 +16,7 @@ jobs:
     steps:
       - checkout
       # Run your orb's commands to validate them.
-      - testutils/create-config
+      - testutils/test-config
 
 workflows:
   test-deploy:
