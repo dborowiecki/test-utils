@@ -1,0 +1,9 @@
+
+description: >
+  This is test command used for publishing validation.
+
+steps:
+  - run:
+      name: Echo information.
+      command: |
+        echo "Test succesfull."
