@@ -24,6 +24,7 @@ jobs:
             cd << parameters.example-app-path >> && ./test_entrypoint.sh
 
             # Execute gherkin tests for given application using test_entrypoint.sh
+            
             chmod u+x << parameters.test-suite-path >>/test_entrypoint.sh
             cd << parameters.test-suite-path >> && ./test_entrypoint.sh
       - checkout
