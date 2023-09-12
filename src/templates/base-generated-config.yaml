@@ -24,7 +24,7 @@ jobs:
             # Clone repository into a temporary directory and switch to the specified tag
             git clone . temp_repo
             cd temp_repo
-            git checkout tags/<< parameters.bb-version >>
+            git checkout << parameters.bb-version >>
 
             if [ ! -d "<< parameters.test-suite-path >>" ]; then
               mkdir -p << parameters.test-suite-path >>
