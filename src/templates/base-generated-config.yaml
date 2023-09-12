@@ -11,18 +11,35 @@ jobs:
         type: string
       test-suite-path:
         type: string
+      bb-version:
+        type: string
     machine:
       image: ubuntu-2004:current
       docker_layer_caching: true
     steps:
       - checkout
       - run:
+          name: Checkout Test Suite from Specific Version
+          command: |
+            # Clone repository into a temporary directory and switch to the specified tag
+            git clone . temp_repo
+            cd temp_repo
+            git checkout tags/<< parameters.bb-version >>
+
+            if [ ! -d "<< parameters.test-suite-path >>" ]; then
+              mkdir -p << parameters.test-suite-path >>
+            fi
+
+            cp -r test/* << parameters.test-suite-path >>
+            cd .. && rm -rf temp_repo
+
+      - run:
           name: Execute tests
           command: |
             echo "# Execute application test_entrypoint.sh in background."
             # Execute application test_entrypoint.sh in background.
             chmod u+x << parameters.example-app-path >>/test_entrypoint.sh
-            cd << parameters.example-app-path >> && ./test_entrypoint.sh
+            cd << parameters.example-app-path >> && ./test_entrypoint.sh --version << parameters.bb-version >>
 
             # Check for testCustomParameters.json
             if [ -f << parameters.example-app-path >>/testCustomParameters.json ]; then
@@ -77,6 +94,7 @@ jobs:
               # Meta file is not mandatory but curl will return 26 code if it's missing.
               curl -v -F buildingBlock=${CIRCLE_PROJECT_REPONAME} \
                 -F report=@${TEST_RESULT_REPORT_PATH}             \
+                -F version=<< parameters.bb-version >>            \
                 -F META=@${TEST_PRODUCT_META_PATH}                \
                 -F testSuite=<< parameters.test-suite-name >>     \
                 -F testApp=<< parameters.example-app-name >>      \
@@ -86,6 +104,7 @@ jobs:
             else
               curl -v -F buildingBlock=${CIRCLE_PROJECT_REPONAME} \
                 -F report=@${TEST_RESULT_REPORT_PATH}             \
+                -F version=<< parameters.bb-version >>            \
                 -F testSuite=<< parameters.test-suite-name >>     \
                 -F testApp=<< parameters.example-app-name >>      \
                 -F sourceBranch=${CIRCLE_BRANCH}                  \
@@ -94,9 +113,6 @@ jobs:
             fi
 
             exit $?
-
-
-
 
 workflows:
   test_everything:
