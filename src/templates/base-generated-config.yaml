@@ -112,8 +112,47 @@ jobs:
                 "${TEST_RESULT_STORAGE_URL}"
             fi
 
-            exit $?
+      - run:
+          name: Export test results to staging
+          command: |
+            export TEST_RESULT_REPORT_PATH=<< parameters.test-suite-path >>/result/example_result.message
 
+            if [[ -z "${TEST_RESULT_STORAGE_URL_STAGING}" ]]; then
+              echo "No Staging Test Result Storage URL detected."
+              echo "Skipping staging test result export."
+              exit 0
+            fi
+
+            if [[ -z "${TEST_RESULTS_STORAGE_API_KEY}" ]]; then
+              echo "No Test Result Storage API Key detected."
+              echo "Please set the TEST_RESULTS_STORAGE_API_KEY environment variable."
+              echo "Aborting test result export."
+              exit 1
+            fi
+
+            if [ -f "$TEST_PRODUCT_META_PATH" ]; then
+              curl -v -F buildingBlock=${CIRCLE_PROJECT_REPONAME} \
+                -F report=@${TEST_RESULT_REPORT_PATH}             \
+                -F version=<< parameters.bb-version >>            \
+                -F META=@${TEST_PRODUCT_META_PATH}                \
+                -F testSuite=<< parameters.test-suite-name >>     \
+                -F testApp=<< parameters.example-app-name >>      \
+                -F sourceBranch=${CIRCLE_BRANCH}                  \
+                -H "x-api-key: ${TEST_RESULTS_STORAGE_API_KEY}"   \
+                "${TEST_RESULT_STORAGE_URL_STAGING}"
+            else
+              curl -v -F buildingBlock=${CIRCLE_PROJECT_REPONAME} \
+                -F report=@${TEST_RESULT_REPORT_PATH}             \
+                -F version=<< parameters.bb-version >>            \
+                -F testSuite=<< parameters.test-suite-name >>     \
+                -F testApp=<< parameters.example-app-name >>      \
+                -F sourceBranch=${CIRCLE_BRANCH}                  \
+                -H "x-api-key: ${TEST_RESULTS_STORAGE_API_KEY}"   \
+                "${TEST_RESULT_STORAGE_URL_STAGING}"
+            fi
+
+            exit $?
+            
 workflows:
   test_everything:
     jobs:
