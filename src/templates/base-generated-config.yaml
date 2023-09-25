@@ -113,7 +113,7 @@ jobs:
             fi
 
       - run:
-          name: Export test results to staging
+          name: Export test results to prod
           command: |
             export TEST_RESULT_REPORT_PATH=<< parameters.test-suite-path >>/result/example_result.message
 
