@@ -123,7 +123,7 @@ jobs:
               exit 0
             fi
 
-            if [[ -z "${TEST_RESULTS_STORAGE_API_KEY}" ]]; then
+            if [[ -z "${TEST_RESULTS_STORAGE_API_KEY_STAGING}" ]]; then
               echo "No Test Result Storage API Key detected."
               echo "Please set the TEST_RESULTS_STORAGE_API_KEY environment variable."
               echo "Aborting test result export."
@@ -138,7 +138,7 @@ jobs:
                 -F testSuite=<< parameters.test-suite-name >>     \
                 -F testApp=<< parameters.example-app-name >>      \
                 -F sourceBranch=${CIRCLE_BRANCH}                  \
-                -H "x-api-key: ${TEST_RESULTS_STORAGE_API_KEY}"   \
+                -H "x-api-key: ${TEST_RESULTS_STORAGE_API_KEY_STAGING}"   \
                 "${TEST_RESULT_STORAGE_URL_STAGING}"
             else
               curl -v -F buildingBlock=${CIRCLE_PROJECT_REPONAME} \
@@ -147,7 +147,7 @@ jobs:
                 -F testSuite=<< parameters.test-suite-name >>     \
                 -F testApp=<< parameters.example-app-name >>      \
                 -F sourceBranch=${CIRCLE_BRANCH}                  \
-                -H "x-api-key: ${TEST_RESULTS_STORAGE_API_KEY}"   \
+                -H "x-api-key: ${TEST_RESULTS_STORAGE_API_KEY_STAGING}"   \
                 "${TEST_RESULT_STORAGE_URL_STAGING}"
             fi
 
