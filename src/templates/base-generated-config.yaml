@@ -113,7 +113,7 @@ jobs:
             fi
 
       - run:
-          name: Export test results to prod
+          name: Export test results to staging
           command: |
             export TEST_RESULT_REPORT_PATH=<< parameters.test-suite-path >>/result/example_result.message
 
@@ -125,7 +125,7 @@ jobs:
 
             if [[ -z "${TEST_RESULTS_STORAGE_API_KEY_STAGING}" ]]; then
               echo "No Test Result Storage API Key detected."
-              echo "Please set the TEST_RESULTS_STORAGE_API_KEY environment variable."
+              echo "Please set the TEST_RESULTS_STORAGE_API_KEY_STAGING environment variable."
               echo "Aborting test result export."
               exit 1
             fi
