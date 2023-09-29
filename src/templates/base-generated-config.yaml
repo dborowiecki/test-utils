@@ -152,7 +152,6 @@ jobs:
             fi
 
             exit $?
-            
 workflows:
   test_everything:
     jobs:
