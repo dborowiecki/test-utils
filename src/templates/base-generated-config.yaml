@@ -66,7 +66,7 @@ jobs:
           path: << parameters.test-suite-path >>/result
       - checkout
       - run:
-          name: Export test results
+          name: Export test results to testing.govstack.global
           command: |
             export TEST_RESULT_REPORT_PATH=<< parameters.test-suite-path >>/result/example_result.message
             export TEST_PRODUCT_META_PATH=<< parameters.example-app-path >>/META.yml
@@ -113,9 +113,10 @@ jobs:
             fi
 
       - run:
-          name: Export test results to staging
+          name: Export test results to staging.testing.govstack.global
           command: |
             export TEST_RESULT_REPORT_PATH=<< parameters.test-suite-path >>/result/example_result.message
+            export TEST_PRODUCT_META_PATH=<< parameters.example-app-path >>/META.yml
 
             if [[ -z "${TEST_RESULT_STORAGE_URL_STAGING}" ]]; then
               echo "No Staging Test Result Storage URL detected."
@@ -131,6 +132,7 @@ jobs:
             fi
 
             if [ -f "$TEST_PRODUCT_META_PATH" ]; then
+              # Meta file is not mandatory but curl will return 26 code if it's missing.
               curl -v -F buildingBlock=${CIRCLE_PROJECT_REPONAME} \
                 -F report=@${TEST_RESULT_REPORT_PATH}             \
                 -F version=<< parameters.bb-version >>            \
