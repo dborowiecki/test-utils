@@ -23,6 +23,9 @@ def is_valid(test_harness_path):
   
   If shell script is not provided given entity is excluded from test harness. 
   """
+  if not os.path.isdir(test_harness_path):
+        return False
+
   elements = [os.path.basename(name) for name in os.listdir(test_harness_path)]
   if 'test_entrypoint.sh' not in elements:
       return False 
@@ -49,14 +52,14 @@ def app_and_name_from_path(test_harness_path):
 def list_test_executions(example_apps, versions): 
     test_executions = []
     for app, version in itertools.product(example_apps, versions):
-        if not is_valid(app):
+        if not os.path.isdir(app) or not is_valid(app):
             print(f"---\nApp: {app}\nwill not be executed.\ntest_entrypoint.sh is missing.\n---")
             continue
 
         suites_for_version = list_test_suites_for_version(version)
         for suite in suites_for_version:
             suite_path = os.path.join(test_suites_path, suite)
-            if not os.path.exists(suite_path) or not is_valid(suite_path):
+            if not os.path.exists(suite_path) or not os.path.isdir(suite_path) or not is_valid(suite_path):
                 print(f"---\nTest Suite: {suite}\nwill not be executed.\ntest_entrypoint.sh is missing.\n---")
                 continue
 
