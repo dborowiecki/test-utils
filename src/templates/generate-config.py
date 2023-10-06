@@ -23,6 +23,9 @@ def is_valid(test_harness_path):
   
   If shell script is not provided given entity is excluded from test harness. 
   """
+  if not os.path.isdir(test_harness_path):
+        return False
+
   elements = [os.path.basename(name) for name in os.listdir(test_harness_path)]
   if 'test_entrypoint.sh' not in elements:
       return False 
