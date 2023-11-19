@@ -81,7 +81,7 @@ def wrap_with_condition(steps, app_name):
             "condition": {
                 "equal": ["<< parameters.example-app-name >>", app_name]
             },
-            "steps": steps
+            "steps": steps['steps']
         }
     }
 
