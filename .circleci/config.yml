@@ -24,7 +24,7 @@ workflows:
           filters:
             tags:
               only: /.*/
-          orb-name: govstack-working-group/testutils
+          orb-name: dborowiecki/testutils
           requires:
             - orb-tools/lint
             - orb-tools/review

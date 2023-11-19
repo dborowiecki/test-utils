@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  testutils: dborowiecki/testutils@0.2.1
+  testutils: dborowiecki/testutils@dev:<<pipeline.git.revision>>
   orb-tools: circleci/orb-tools@11.5
 
 filters: &filters
