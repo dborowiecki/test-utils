@@ -150,5 +150,7 @@ with open(base_config) as f:
     available_versions.append(main_branch)
     circle_config['workflows']['test_everything']['jobs'] = list_test_executions(available_examples, available_versions)
     circle_config = append_custom_yamls(circle_config, available_examples)
+    yaml_content = yaml.dump(circle_config, default_flow_style=False)
+    print(yaml_content)
     with open(generated_config, "w") as w: 
       yaml.dump(circle_config, w, default_flow_style=False)
