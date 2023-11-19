@@ -76,16 +76,14 @@ def wrap_with_condition(steps, app_name):
     Returns a list of conditional steps specific to the given app name.
     """
     # Wrap the steps in a 'when' condition
-    return [
-        {
-            "when": {
-                "condition": {
-                    "equal": ["<< parameters.example-app-name >>", app_name]
-                },
-                "steps": steps
-            }
+    return {
+        "when": {
+            "condition": {
+                "equal": ["<< parameters.example-app-name >>", app_name]
+            },
+            "steps": steps
         }
-    ]
+    }
 
 def merge_with_custom_steps(circle_config, custom_config, app_name):
     """
@@ -94,18 +92,15 @@ def merge_with_custom_steps(circle_config, custom_config, app_name):
     before_steps = custom_config.get('before', [])
     after_steps = custom_config.get('after', [])
 
-    # Wrap custom steps with a condition and insert them
+    # Insert 'before' conditional steps after 'checkout'
     if before_steps:
-      index = 1 # after checkout
-      conditional_before_steps = wrap_with_condition(before_steps, app_name)
-      circle_config['jobs']['test-example']['steps'][index + 1:index + 1] \
-         = conditional_before_steps
+        conditional_before_steps = wrap_with_condition(before_steps, app_name)
+        circle_config['jobs']['test-example']['steps'].insert(1, conditional_before_steps)  # After 'checkout'
 
+    # Append 'after' conditional steps at the end
     if after_steps:
-        index = len(circle_config['jobs']['test-example']['steps'])
         conditional_after_steps = wrap_with_condition(after_steps, app_name)
-        circle_config['jobs']['test-example']['steps'][index:index] \
-         = conditional_after_steps
+        circle_config['jobs']['test-example']['steps'].append(conditional_after_steps)
 
     return circle_config
 
