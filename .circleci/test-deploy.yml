@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  testutils: govstack-working-group/testutils@dev:<<pipeline.git.revision>>
+  testutils: dborowiecki/testutils@dev:<<pipeline.git.revision>>
   orb-tools: circleci/orb-tools@11.5
 
 filters: &filters
@@ -23,7 +23,7 @@ workflows:
       - orb-tools/pack:
           filters: *filters
       - orb-tools/publish:
-          orb-name: govstack-working-group/testutils
+          orb-name: dborowiecki/testutils
           vcs-type: << pipeline.project.type >>
           pub-type: production
           requires:
