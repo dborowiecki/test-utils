@@ -109,7 +109,7 @@ def merge_with_custom_steps(circle_config, custom_config, app_name):
 
     return circle_config
 
-def list_test_executions(circle_config, example_apps): 
+def append_custom_yamls(circle_config, example_apps): 
     for app in example_apps:
         app_path, app_name = app_and_name_from_path(app)
         if not extends_config(app_path):
